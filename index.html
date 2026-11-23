@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BraClean · Seu carro merece</title>
+<meta name="description" content="BraClean Premium Car Care. Patrocinadora oficial da Porsche Cup. Aditivos, Car Care e Home Care.">
+<meta name="theme-color" content="#0a0a0a">
+<style>
+  :root{
+    --bg:#0a0a0a; --panel:#141414; --line:#262626;
+    --red:#e10600; --yellow:#ffd200; --white:#f5f5f5; --muted:#9a9a9a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--white);font-family:"Helvetica Neue",Arial,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  img{display:block;width:100%;height:auto}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:560px;margin:0 auto;padding-bottom:40px;
+    background:radial-gradient(120% 40% at 50% 0%,rgba(225,6,0,.18),transparent 70%)}
+  .race{font-style:italic;font-weight:900;letter-spacing:.02em;text-transform:uppercase}
+
+  /* faixa topo */
+  .ribbon{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 14px;
+    background:linear-gradient(90deg,#000,#1a0000 30%,#1a0000 70%,#000);border-bottom:2px solid var(--red);
+    font-size:12px}
+  .ribbon b{color:var(--yellow)}
+  .flag{width:22px;height:14px;flex:none;background:
+    conic-gradient(#fff 25%,#000 0 50%,#fff 0 75%,#000 0) 0 0/7px 7px;border-radius:2px}
+
+  /* hero */
+  .hero{position:relative}
+  .hero img{aspect-ratio:16/9;object-fit:cover}
+
+  /* CTAs */
+  .ctas{display:grid;gap:10px;padding:18px 16px 6px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;border-radius:14px;
+    font-size:16px;transition:transform .15s ease,filter .15s ease}
+  .btn:active{transform:scale(.98)}
+  .btn-ml{background:var(--yellow);color:#111;box-shadow:0 8px 24px rgba(255,210,0,.25)}
+  .btn-shopee{background:#ee4d2d;color:#fff;box-shadow:0 8px 24px rgba(238,77,45,.25)}
+  .btn-amazon{background:#232f3e;color:#fff;border:1px solid #3b4d63;box-shadow:0 8px 24px rgba(35,47,62,.4)}
+
+  /* títulos de seção */
+  .sec{padding:28px 16px 0}
+  .h{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;font-size:22px}
+  .h::before{content:"";width:6px;height:22px;background:var(--red);transform:skewX(-15deg);align-self:center}
+  .h small{font-size:12px;color:var(--muted);font-style:normal;font-weight:600;letter-spacing:.08em}
+
+  /* cards aditivos */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .card{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+  .card img{aspect-ratio:1/1;object-fit:cover;transition:transform .4s ease}
+  .card:hover img{transform:scale(1.05)}
+  .card span{position:absolute;left:0;right:0;bottom:0;padding:22px 6px 8px;text-align:center;font-size:13px;
+    background:linear-gradient(transparent,rgba(0,0,0,.85))}
+  .card.d span{color:#ff4a3d}.card.g span{color:var(--yellow)}.card.f span{color:#39e75f}
+
+  /* botões de linha */
+  .lines{display:grid;gap:12px}
+  .tile{position:relative;display:block;border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+  .tile img{aspect-ratio:16/9;object-fit:cover;transition:transform .5s ease}
+  .tile:hover img{transform:scale(1.04)}
+  .tile .lbl{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:flex-end;
+    padding:40px 16px 14px;background:linear-gradient(transparent,rgba(0,0,0,.9))}
+  .tile .lbl strong{font-size:26px;line-height:1}
+  .tile .lbl em{font-style:normal;font-size:12px;color:var(--muted);display:block;margin-top:4px;font-weight:600}
+  .arrow{width:40px;height:40px;border-radius:50%;background:var(--red);display:grid;place-items:center;flex:none;font-size:20px;font-style:normal}
+
+  /* Porsche */
+  .track{position:relative;margin-top:30px}
+  .track img{aspect-ratio:4/3;object-fit:cover}
+  .track .ov{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-start;padding:22px 16px;
+    background:linear-gradient(180deg,rgba(10,10,10,.95) 0%,rgba(10,10,10,.55) 30%,transparent 50%,transparent 85%,rgba(10,10,10,1) 100%)}
+  .track .ov .k{font-size:12px;color:var(--yellow);font-weight:700;letter-spacing:.12em;margin-bottom:6px}
+  .track .ov .t{font-size:30px;line-height:1}
+  .gal{display:grid;grid-template-columns:1fr;gap:8px;padding:8px 16px 0}
+  .gal img{border-radius:14px;aspect-ratio:3/2;object-fit:cover;object-position:50% 30%}
+
+  /* Wilson */
+  .wilson{margin:28px 16px 0;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--panel)}
+  .wilson .cap{padding:14px 16px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+  .wilson .cap b{color:var(--white)}
+  .seal{width:34px;height:34px;border-radius:50%;background:var(--yellow);color:#111;display:grid;place-items:center;font-weight:900;flex:none}
+
+  footer{padding:30px 16px 0;text-align:center;color:var(--muted);font-size:12px}
+  footer a.site{display:inline-block;margin-bottom:8px;color:var(--yellow);font-size:15px}
+  .wa{position:fixed;right:16px;bottom:16px;width:58px;height:58px;border-radius:50%;background:#25d366;display:grid;place-items:center;
+    box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:10}
+  .wa svg{width:30px;height:30px;fill:#fff}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="ribbon race"><span class="flag"></span><span>Patrocinadora oficial · <b>Porsche Cup</b></span><span class="flag"></span></div>
+
+  <header class="hero">
+    <img src="img/hero.jpg" alt="BraClean Premium Car Care — Seu carro merece. Aditivos Diesel, Gasolina e Flex na pista molhada" fetchpriority="high">
+  </header>
+
+  <nav class="ctas">
+    <a class="btn btn-ml race" data-link="mercadolivre" href="#">Comprar no Mercado Livre</a>
+    <a class="btn btn-shopee race" data-link="shopee" href="#">Comprar na Shopee</a>
+    <a class="btn btn-amazon race" data-link="amazon" href="#">Comprar na Amazon</a>
+  </nav>
+
+  <section class="sec reveal" id="aditivos">
+    <h2 class="h race">Aditivos <small>escolha o seu</small></h2>
+    <div class="cards">
+      <a class="card d" data-link="diesel" href="#"><img src="img/card-diesel.jpg" alt="Aditivo BraClean Diesel" loading="lazy"><span class="race">Diesel</span></a>
+      <a class="card g" data-link="gasolina" href="#"><img src="img/card-gasolina.jpg" alt="Aditivo BraClean Gasolina" loading="lazy"><span class="race">Gasolina</span></a>
+      <a class="card f" data-link="flex" href="#"><img src="img/card-flex.jpg" alt="Aditivo BraClean Flex" loading="lazy"><span class="race">Flex</span></a>
+    </div>
+  </section>
+
+  <section class="sec reveal">
+    <h2 class="h race">Linhas</h2>
+    <div class="lines">
+      <a class="tile" data-link="linha_aditivos" href="#">
+        <img src="img/btn-aditivos.jpg" alt="Linha de aditivos BraClean" loading="lazy">
+        <div class="lbl"><div><strong class="race">Aditivos</strong><em>Diesel · Gasolina · Flex</em></div><i class="arrow">›</i></div>
+      </a>
+      <a class="tile" data-link="linha_carcare" href="#">
+        <img src="img/btn-carcare.jpg" alt="Linha Car Care BraClean" loading="lazy">
+        <div class="lbl"><div><strong class="race">Car Care</strong><em>Brilho, proteção e limpeza</em></div><i class="arrow">›</i></div>
+      </a>
+      <a class="tile" data-link="linha_home" href="#">
+        <img src="img/btn-home.jpg" alt="Linha Home Care BraClean" loading="lazy">
+        <div class="lbl"><div><strong class="race">Home</strong><em>Sua casa merece</em></div><i class="arrow">›</i></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="track reveal">
+    <img src="img/porsche.jpg" alt="Porsche 911 GT3 Cup com a marca BraClean na pista" loading="lazy">
+    <div class="ov">
+      <div class="k race">Patrocinadora oficial</div>
+      <div class="t race">Na pista da<br>Porsche Cup</div>
+    </div>
+  </section>
+  <div class="gal reveal">
+    <img src="img/promotora.jpg" alt="BraClean nos boxes da Porsche Cup" loading="lazy">
+  </div>
+
+  <section class="wilson reveal">
+    <img src="img/wilson.jpg" alt="Produtos BraClean aprovados por Wilson Fittipaldi Jr." loading="lazy">
+    <div class="cap"><span class="seal">✓</span><span><b class="race">Aprovado por Wilson Fittipaldi Jr.</b></span></div>
+  </section>
+
+  <footer>
+    <a class="site race" href="https://www.braclean.com.br" target="_blank" rel="noopener">www.braclean.com.br</a>
+    <div>BraClean Premium Car Care · Seu carro merece</div>
+  </footer>
+</div>
+
+<a class="wa" data-link="whatsapp" href="#" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.6 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3.1s.8-2.2 1.1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.4z"/></svg>
+</a>
+
+<script>
+  /* ===== LINKS: troque só aqui ===== */
+  const LINKS = {
+    mercadolivre:   "https://www.mercadolivre.com.br/pagina/mm20240904085825",
+    shopee:         "https://shopee.com.br/search?keyword=braclean",   // PROVISÓRIO: trocar pelo link da loja Motorbrands
+    amazon:         "https://www.amazon.com.br/s?me=A1N3HJ5VY83U9F&k=braclean",
+    whatsapp:       "",
+    diesel:         "https://www.mercadolivre.com.br/kit-5-melhor-aditivo-para-combustivel-diesel-250ml-premium/up/MLBU3428056220?pdp_filters=item_id%3AMLB5709500356",
+    gasolina:       "https://www.mercadolivre.com.br/melhor-kit-3-aditivo-combustivel-gasolina-250ml-braclean/up/MLBU5371045668?pdp_filters=item_id%3AMLB5322039347",
+    flex:           "https://www.mercadolivre.com.br/kit-3-melhor-aditivo-para-combustivel-flex-250ml-premium/up/MLBU5120637190?pdp_filters=item_id%3AMLB5191460033",
+    linha_aditivos: "https://lista.mercadolivre.com.br/pagina/mm20240904085825/aditivo-combustivel",
+    linha_carcare:  "https://lista.mercadolivre.com.br/pagina/mm20240904085825/braclean-automotivo",
+    linha_home:     "https://www.mercadolivre.com.br/kit-limpeza-de-casa-5-spray-multiuso-500ml-limpa-e-protege/p/MLB73895113?pdp_filters=item_id%3AMLB7703245682"
+  };
+  document.querySelectorAll("[data-link]").forEach(a=>{
+    const url = LINKS[a.dataset.link];
+    if(url){ a.href=url; a.target="_blank"; a.rel="noopener"; }
+    else if(a.dataset.link==="whatsapp"){ a.style.display="none"; }
+    else { a.href=LINKS.mercadolivre; a.target="_blank"; a.rel="noopener"; }
+  });
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
+  document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
