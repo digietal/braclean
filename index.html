@@ -85,9 +85,6 @@
 
   footer{padding:30px 16px 0;text-align:center;color:var(--muted);font-size:12px}
   footer a.site{display:inline-block;margin-bottom:8px;color:var(--yellow);font-size:15px}
-  .wa{position:fixed;right:16px;bottom:16px;width:58px;height:58px;border-radius:50%;background:#25d366;display:grid;place-items:center;
-    box-shadow:0 8px 24px rgba(0,0,0,.5);z-index:10}
-  .wa svg{width:30px;height:30px;fill:#fff}
 
   .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
   .reveal.in{opacity:1;transform:none}
@@ -158,17 +155,13 @@
   </footer>
 </div>
 
-<a class="wa" data-link="whatsapp" href="#" aria-label="Falar no WhatsApp">
-  <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.6 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.1-1-.3-1.7-.6-3-1.3-4.9-4.3-5.1-4.5-.1-.2-1.2-1.6-1.2-3.1s.8-2.2 1.1-2.5c.3-.3.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.4z"/></svg>
-</a>
 
 <script>
   /* ===== LINKS: troque só aqui ===== */
   const LINKS = {
     mercadolivre:   "https://www.mercadolivre.com.br/pagina/mm20240904085825",
-    shopee:         "https://shopee.com.br/search?keyword=braclean",   // PROVISÓRIO: trocar pelo link da loja Motorbrands
+    shopee:         "https://shopee.com.br/motorbrands?categoryId=102187&entryPoint=ShopByPDP&itemId=58215905243",
     amazon:         "https://www.amazon.com.br/s?me=A1N3HJ5VY83U9F&k=braclean",
-    whatsapp:       "",
     diesel:         "https://www.mercadolivre.com.br/kit-5-melhor-aditivo-para-combustivel-diesel-250ml-premium/up/MLBU3428056220?pdp_filters=item_id%3AMLB5709500356",
     gasolina:       "https://www.mercadolivre.com.br/melhor-kit-3-aditivo-combustivel-gasolina-250ml-braclean/up/MLBU5371045668?pdp_filters=item_id%3AMLB5322039347",
     flex:           "https://www.mercadolivre.com.br/kit-3-melhor-aditivo-para-combustivel-flex-250ml-premium/up/MLBU5120637190?pdp_filters=item_id%3AMLB5191460033",
@@ -179,7 +172,6 @@
   document.querySelectorAll("[data-link]").forEach(a=>{
     const url = LINKS[a.dataset.link];
     if(url){ a.href=url; a.target="_blank"; a.rel="noopener"; }
-    else if(a.dataset.link==="whatsapp"){ a.style.display="none"; }
     else { a.href=LINKS.mercadolivre; a.target="_blank"; a.rel="noopener"; }
   });
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
