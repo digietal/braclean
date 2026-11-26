@@ -64,7 +64,8 @@
   .login input:focus { outline: 2px solid var(--red); border-color: transparent; }
   .login button { margin-top: 6px; background: var(--yellow); color: #111; border: 0; border-radius: 12px; min-height: 50px; font-size: 16px; cursor: pointer; }
   .login button:disabled { opacity: .6; }
-  .login .erro { color: #ff6b5e; font-size: 13px; min-height: 16px; }
+  .login .erro { color: #fff; background: #5c0a05; border: 1px solid var(--red); border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+  .login .erro:empty { display: none; }
   .carregando { color: var(--muted); padding: 60px 0; text-align: center; }
 </style>
 </head>
@@ -273,13 +274,16 @@
   $('form-login').addEventListener('submit', async (ev) => {
     ev.preventDefault();
     const fd = new FormData(ev.target); const btn = ev.target.querySelector('button');
-    btn.disabled = true; $('erro-login').textContent = '';
+    btn.disabled = true; btn.textContent = 'Entrando…'; $('erro-login').textContent = '';
     try {
       const r = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ usuario: fd.get('usuario'), senha: fd.get('senha') }) });
       const d = await r.json().catch(() => ({}));
-      if (!r.ok) { $('erro-login').textContent = d.erro || 'Não foi possível entrar.'; return; }
+      if (!r.ok) { $('erro-login').textContent = (d.erro || 'Não foi possível entrar.') + ' (código ' + r.status + ')'; return; }
       mostrar('carregando'); await carregar();
-    } finally { btn.disabled = false; }
+      if (!$('tela-login').hidden) $('erro-login').textContent = 'O login foi aceito, mas o navegador não guardou a sessão. Libere cookies para este site e tente de novo.';
+    } catch (e) {
+      $('erro-login').textContent = 'Sem conexão com o painel agora. Tente de novo em instantes.';
+    } finally { btn.disabled = false; btn.textContent = 'Entrar'; }
   });
   $('sair').addEventListener('click', async () => { await fetch('/api/login', { method: 'DELETE' }); location.reload(); });
   let largura = window.innerWidth;

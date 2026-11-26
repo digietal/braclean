@@ -5,8 +5,10 @@ const COOKIE = 'painel_sessao';
 const DURACAO_S = 7 * 24 * 3600; // sessão vale 7 dias
 
 function logins() {
+  // Aceita o valor colado com aspas, espaços ou quebras de linha por engano.
   return String(process.env.PAINEL_LOGINS || '')
-    .split(',')
+    .replace(/["'“”‘’`]/g, '')
+    .split(/[,;\n]/)
     .map((par) => par.trim())
     .filter(Boolean)
     .map((par) => {
@@ -34,7 +36,7 @@ function iguais(a, b) {
 }
 
 function conferir(usuario, senha) {
-  return logins().some((l) => iguais(l.usuario.toLowerCase(), String(usuario || '').trim().toLowerCase()) && iguais(l.senha, String(senha || '')));
+  return logins().some((l) => iguais(l.usuario.toLowerCase(), String(usuario || '').trim().toLowerCase()) && iguais(l.senha, String(senha || '').trim()));
 }
 
 function criarSessao(usuario) {
