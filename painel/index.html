@@ -169,7 +169,9 @@
   }
 
   async function carregar() {
-    const r = await fetch('/api/painel', { credentials: 'same-origin', cache: 'no-store' });
+    let tk = ''; try { tk = sessionStorage.getItem('painel_tk') || localStorage.getItem('painel_tk') || ''; } catch (e) {}
+    const r = await fetch('/api/painel', { credentials: 'same-origin', cache: 'no-store', headers: tk ? { Authorization: 'Sessao ' + tk } : {} });
+    if (r.status === 401 && tk) { try { sessionStorage.removeItem('painel_tk'); localStorage.removeItem('painel_tk'); } catch (e) {} }
     if (r.status === 401) { mostrar('login'); return; }
     const d = await r.json().catch(() => ({}));
     if (!r.ok) { mostrar('painel'); $('avisos').replaceChildren(el('div', { className: 'aviso', textContent: d.erro || 'Não foi possível carregar os dados agora.' })); return; }
@@ -279,13 +281,14 @@
       const r = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ usuario: fd.get('usuario'), senha: fd.get('senha') }) });
       const d = await r.json().catch(() => ({}));
       if (!r.ok) { $('erro-login').textContent = (d.erro || 'Não foi possível entrar.') + ' (código ' + r.status + ')'; return; }
+      if (d.token) { try { localStorage.setItem('painel_tk', d.token); } catch (e) { try { sessionStorage.setItem('painel_tk', d.token); } catch (e2) {} } }
       mostrar('carregando'); await carregar();
       if (!$('tela-login').hidden) $('erro-login').textContent = 'O login foi aceito, mas o navegador não guardou a sessão. Libere cookies para este site e tente de novo.';
     } catch (e) {
       $('erro-login').textContent = 'Sem conexão com o painel agora. Tente de novo em instantes.';
     } finally { btn.disabled = false; btn.textContent = 'Entrar'; }
   });
-  $('sair').addEventListener('click', async () => { await fetch('/api/login', { method: 'DELETE' }); location.reload(); });
+  $('sair').addEventListener('click', async () => { try { localStorage.removeItem('painel_tk'); sessionStorage.removeItem('painel_tk'); } catch (e) {} await fetch('/api/login', { method: 'DELETE' }); location.reload(); });
   let largura = window.innerWidth;
   window.addEventListener('resize', () => { if (Math.abs(window.innerWidth - largura) > 40 && window.__ultimo) { largura = window.innerWidth; grafico($('grafico'), window.__ultimo.dias || []); } });
   setInterval(() => { if (!$('tela-painel').hidden && !document.hidden) carregar(); }, 5 * 60 * 1000);

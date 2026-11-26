@@ -8,7 +8,7 @@ function logins() {
   // Aceita o valor colado com aspas, espaços ou quebras de linha por engano.
   return String(process.env.PAINEL_LOGINS || '')
     .replace(/["'“”‘’`]/g, '')
-    .split(/[,;\n]/)
+    .split(/[,\n]/)
     .map((par) => par.trim())
     .filter(Boolean)
     .map((par) => {
@@ -18,11 +18,11 @@ function logins() {
     .filter(Boolean);
 }
 
-// Chave de assinatura derivada das variáveis secretas: trocar uma senha derruba as sessões abertas.
+// Chave de assinatura derivada só dos logins: trocar uma senha derruba as sessões abertas,
+// trocar as chaves do Zernio ou da Vercel não.
 function segredo() {
-  return crypto.createHash('sha256')
-    .update('painel|' + (process.env.PAINEL_LOGINS || '') + '|' + (process.env.VERCEL_TOKEN || ''))
-    .digest();
+  const base = logins().map((l) => l.usuario.toLowerCase() + ':' + l.senha).join(',');
+  return crypto.createHash('sha256').update('painel-v2|' + base).digest();
 }
 
 function assinar(texto) {
@@ -46,6 +46,8 @@ function criarSessao(usuario) {
 }
 
 function lerCookie(req) {
+  const auth = req.headers.authorization || '';
+  if (auth.startsWith('Sessao ')) return auth.slice(7).trim();
   const linha = req.headers.cookie || '';
   const m = linha.split(/;\s*/).find((c) => c.startsWith(COOKIE + '='));
   return m ? decodeURIComponent(m.slice(COOKIE.length + 1)) : '';
@@ -56,7 +58,7 @@ function sessao(req) {
   const valor = lerCookie(req);
   if (!valor) { console.log('[painel] sem cookie de sessão'); return null; }
   const [corpo, ass] = valor.split('.');
-  if (!corpo || !ass || !iguais(assinar(corpo), ass)) { console.log('[painel] assinatura da sessão não confere'); return null; }
+  if (!corpo || !ass || !iguais(assinar(corpo), ass)) { console.log('[painel] assinatura da sessão não confere', JSON.stringify({ recebida: String(ass).slice(0, 6), esperada: assinar(corpo).slice(0, 6) })); return null; }
   try {
     const { u, exp } = JSON.parse(Buffer.from(corpo, 'base64url').toString());
     if (!u || !exp || exp < Date.now() / 1000) { console.log('[painel] sessão expirada'); return null; }

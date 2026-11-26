@@ -24,7 +24,9 @@ module.exports = async (req, res) => {
     await new Promise((r) => setTimeout(r, 800)); // freia tentativas em sequência
     return res.status(401).json({ erro: 'Usuário ou senha incorretos.' });
   }
-  res.setHeader('Set-Cookie', cookieSessao(criarSessao(String(usuario).trim()), DURACAO_S));
-  console.log('[login] aceito');
+  const token = criarSessao(String(usuario).trim());
+  res.setHeader('Set-Cookie', cookieSessao(token, DURACAO_S));
+  console.log('[login] aceito', JSON.stringify({ assinatura: token.split('.')[1].slice(0, 6) }));
+  return res.status(200).json({ ok: true, token });
   return res.status(200).json({ ok: true });
 };
