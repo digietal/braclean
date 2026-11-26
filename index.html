@@ -141,32 +141,29 @@
   </div>
 
   <footer>
-    <a class="site race" href="https://www.braclean.com.br" target="_blank" rel="noopener">www.braclean.com.br</a>
+    <a class="site race" data-link="site_oficial" href="https://www.braclean.com.br">www.braclean.com.br</a>
     <div>BraClean Premium Car Care · Seu carro merece</div>
   </footer>
 </div>
 
 
+<script src="./links.js"></script>
 <script>
-  /* ===== LINKS: troque só aqui ===== */
-  const LINKS = {
-    mercadolivre:   "https://www.mercadolivre.com.br/pagina/mm20240904085825",
-    shopee:         "https://shopee.com.br/motorbrands?categoryId=102187&entryPoint=ShopByPDP&itemId=58215905243",
-    amazon:         "https://www.amazon.com.br/s?me=A1N3HJ5VY83U9F&marketplaceID=A2Q3Y263D00KWC",
-    diesel:         "https://www.mercadolivre.com.br/kit-5-melhor-aditivo-para-combustivel-diesel-250ml-premium/up/MLBU3428056220?pdp_filters=item_id%3AMLB5709500356",
-    gasolina:       "https://www.mercadolivre.com.br/melhor-kit-3-aditivo-combustivel-gasolina-250ml-braclean/up/MLBU5371045668?pdp_filters=item_id%3AMLB5322039347",
-    flex:           "https://www.mercadolivre.com.br/kit-3-melhor-aditivo-para-combustivel-flex-250ml-premium/up/MLBU5120637190?pdp_filters=item_id%3AMLB5191460033",
-    linha_aditivos: "https://lista.mercadolivre.com.br/pagina/mm20240904085825/aditivo-combustivel",
-    linha_carcare:  "https://lista.mercadolivre.com.br/pagina/mm20240904085825/braclean-automotivo",
-    linha_home:     "https://www.mercadolivre.com.br/kit-limpeza-de-casa-5-spray-multiuso-500ml-limpa-e-protege/p/MLB73895113?pdp_filters=item_id%3AMLB7703245682"
-  };
+  /* Cada botão passa por /ir/<botao> (página de contagem) e segue pra loja.
+     A origem da visita (utm_*) é repassada pra saber de qual campanha veio o clique. */
+  window.va = window.va || function(){ (window.vaq = window.vaq || []).push(arguments); };
+  const utm = new URLSearchParams(location.search);
+  [...utm.keys()].forEach(k=>{ if(!k.startsWith("utm_")) utm.delete(k); });
+  const qs = utm.toString() ? "?" + utm.toString() : "";
   document.querySelectorAll("[data-link]").forEach(a=>{
-    const url = LINKS[a.dataset.link];
-    if(url){ a.href=url; a.target="_blank"; a.rel="noopener"; }
-    else { a.href=LINKS.mercadolivre; a.target="_blank"; a.rel="noopener"; }
+    const key = LINKS[a.dataset.link] ? a.dataset.link : "mercadolivre";
+    a.href = "/ir/" + key + "/" + qs;
+    a.target = "_blank"; a.rel = "noopener";
+    a.addEventListener("click", ()=>window.va("event",{name:"Clique",data:{botao:key}}));
   });
   const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
   document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>

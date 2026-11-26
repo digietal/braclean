@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Abrindo… · BraClean</title>
+<style>html,body{height:100%;margin:0;background:#0a0a0a;color:#f5f5f5;font-family:"Helvetica Neue",Arial,sans-serif}
+body{display:grid;place-items:center;text-align:center}
+.s{width:38px;height:38px;border:4px solid #262626;border-top-color:#e10600;border-radius:50%;margin:0 auto 16px;animation:r .7s linear infinite}
+@keyframes r{to{transform:rotate(360deg)}} a{color:#ffd200} p{font-size:15px;font-style:italic;font-weight:900;text-transform:uppercase}</style>
+</head><body><div><div class="s"></div><p>Abrindo Site oficial…</p>
+<small><a id="go" href="#">Toque aqui se não abrir</a></small></div>
+<script src="/links.js"></script>
+<script>
+  /* Página de contagem: registra a visita em /ir/site_oficial e segue pra loja */
+  var url = (window.LINKS && LINKS["site_oficial"]) || "https://www.braclean.com.br";
+  document.getElementById("go").href = url;
+  var done = false; function go(){ if(!done){ done = true; location.replace(url); } }
+  window.va = window.va || function(){ (window.vaq = window.vaq || []).push(arguments); };
+  var s = document.createElement("script"); s.defer = true; s.src = "/_vercel/insights/script.js";
+  s.onload = function(){ setTimeout(go, 600); }; s.onerror = go;
+  document.head.appendChild(s);
+  setTimeout(go, 1600);
+</script></body></html>
