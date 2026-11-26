@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel BraClean · Resultados do funil</title>
+<meta name="theme-color" content="#0a0a0a">
+<style>
+  :root { --bg:#0a0a0a; --panel:#141414; --line:#262626; --red:#e10600; --yellow:#ffd200; --white:#f5f5f5; --muted:#9a9a9a; --ok:#3ecf6e; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--white); font-family: "Helvetica Neue", Arial, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  .race { font-style: italic; font-weight: 900; text-transform: uppercase; letter-spacing: .02em; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 60px; background: radial-gradient(120% 30% at 50% 0%, rgba(225,6,0,.16), transparent 70%); }
+  .faixa { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); }
+  .faixa .flag { width: 22px; height: 14px; border-radius: 2px; background: conic-gradient(#fff 25%,#000 0 50%,#fff 0 75%,#000 0) 0 0/7px 7px; }
+  h1 { font-size: 28px; margin: 10px 0 4px; }
+  h1 b { color: var(--red); }
+  h2 { font-size: 15px; margin-bottom: 14px; }
+  .sub { color: var(--muted); font-size: 14px; }
+  .lead { margin-top: 14px; font-size: 16px; line-height: 1.45; }
+  .lead b { color: var(--yellow); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+  .grid { display: grid; gap: 14px; margin-top: 18px; }
+  .kpis { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .duas { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .kpi .rot { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .kpi .big { font-size: 32px; font-weight: 800; margin: 6px 0 4px; font-variant-numeric: tabular-nums; }
+  .kpi .det { font-size: 13px; color: var(--muted); }
+  .etapa { display: grid; grid-template-columns: minmax(130px, 32%) 1fr; gap: 12px; align-items: center; margin-bottom: 6px; }
+  .etapa .nome { font-size: 14px; font-weight: 700; }
+  .trilho { position: relative; height: 38px; background: #1d1d1d; border-radius: 8px; overflow: hidden; }
+  .barra { position: absolute; inset: 0 auto 0 0; background: linear-gradient(90deg, var(--red), #ff4a1c); border-radius: 8px; transition: width .6s ease; }
+  .valor { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-weight: 800; font-variant-numeric: tabular-nums; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
+  .passa { grid-column: 2; font-size: 12px; color: var(--muted); padding-left: 12px; min-height: 14px; margin-bottom: 4px; }
+  .linha { display: grid; grid-template-columns: minmax(100px, 45%) 1fr auto; gap: 10px; align-items: center; font-size: 14px; margin-bottom: 10px; }
+  .linha .t { height: 10px; background: #1d1d1d; border-radius: 5px; overflow: hidden; }
+  .linha .t i { display: block; height: 100%; background: var(--yellow); border-radius: 5px; }
+  .vazio { color: var(--muted); font-size: 14px; }
+  .tabela { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 9px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
+  th:first-child, td:first-child { text-align: left; white-space: normal; }
+  th { color: var(--muted); font-size: 12px; font-weight: 600; }
+  td a { color: var(--yellow); }
+  .grafico { position: relative; }
+  .grafico svg { display: block; width: 100%; }
+  .tip { position: absolute; top: 0; background: #000; border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; font-size: 12px; pointer-events: none; white-space: nowrap; }
+  .leg { display: flex; gap: 16px; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  .leg i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  .rodape { margin-top: 22px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; color: var(--muted); font-size: 12px; }
+  button.link { background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; font: inherit; }
+  details { margin-top: 18px; color: var(--muted); font-size: 13px; }
+  details summary { cursor: pointer; }
+  details ul { margin: 10px 0 0 18px; display: grid; gap: 6px; }
+  .aviso { margin-top: 14px; padding: 10px 12px; border: 1px solid #5a4500; background: #1f1800; color: #ffdf73; border-radius: 10px; font-size: 13px; }
+
+  /* login */
+  .login { min-height: 100vh; display: grid; place-items: center; padding: 20px; background: radial-gradient(80% 50% at 50% 0%, rgba(225,6,0,.22), transparent 70%); }
+  .login form { width: 100%; max-width: 360px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 26px 22px; display: grid; gap: 12px; }
+  .login h1 { font-size: 24px; margin: 0; }
+  .login label { font-size: 13px; color: var(--muted); display: grid; gap: 6px; }
+  .login input { background: #0d0d0d; border: 1px solid var(--line); color: var(--white); border-radius: 10px; padding: 13px 12px; font-size: 16px; }
+  .login input:focus { outline: 2px solid var(--red); border-color: transparent; }
+  .login button { margin-top: 6px; background: var(--yellow); color: #111; border: 0; border-radius: 12px; min-height: 50px; font-size: 16px; cursor: pointer; }
+  .login button:disabled { opacity: .6; }
+  .login .erro { color: #ff6b5e; font-size: 13px; min-height: 16px; }
+  .carregando { color: var(--muted); padding: 60px 0; text-align: center; }
+</style>
+</head>
+<body>
+
+<section class="login" id="tela-login" hidden>
+  <form id="form-login" autocomplete="on">
+    <div class="faixa"><span class="flag"></span>Fornecedora oficial · Porsche Cup</div>
+    <h1 class="race">Painel <b style="color:var(--red)">BraClean</b></h1>
+    <p class="sub">Resultados do funil Instagram → biosite → lojas.</p>
+    <label>Usuário <input name="usuario" autocomplete="username" required autocapitalize="none"></label>
+    <label>Senha <input name="senha" type="password" autocomplete="current-password" required></label>
+    <button class="race" type="submit">Entrar</button>
+    <p class="erro" id="erro-login"></p>
+  </form>
+</section>
+
+<main class="wrap" id="tela-painel" hidden>
+  <div class="faixa"><span class="flag"></span>BraClean · Fornecedora oficial da Porsche Cup</div>
+  <h1 class="race">Funil <b>BraClean</b></h1>
+  <p class="sub" id="periodo">Instagram @bracleanoficial → palavra-chave ADITIVO → direct → biosite → lojas.</p>
+  <p class="lead" id="resumo"></p>
+  <div id="avisos"></div>
+
+  <section class="card grid" id="funil" style="margin-top:18px">
+    <h2 class="race">O funil, etapa por etapa</h2>
+    <div id="etapas"></div>
+  </section>
+
+  <section class="grid kpis">
+    <div class="card kpi"><div class="rot">Seguidores agora</div><div class="big" id="k-seg">—</div><div class="det" id="k-seg-det"></div></div>
+    <div class="card kpi"><div class="rot">Seguiram pra liberar o link</div><div class="big" id="k-gate">—</div><div class="det" id="k-gate-det"></div></div>
+    <div class="card kpi"><div class="rot">Clique no link do direct</div><div class="big" id="k-cdm">—</div><div class="det">cliques únicos ÷ links entregues</div></div>
+    <div class="card kpi"><div class="rot">Biosite → loja</div><div class="big" id="k-sl">—</div><div class="det">cliques pra comprar ÷ visitantes</div></div>
+  </section>
+
+  <section class="card" style="margin-top:14px">
+    <h2 class="race">Visitas e cliques por dia</h2>
+    <div class="leg"><span><i style="background:var(--red)"></i>Visitantes no biosite</span><span><i style="background:var(--yellow)"></i>Cliques pra loja</span></div>
+    <div class="grafico" id="grafico"></div>
+    <p class="sub" style="font-size:12px;margin-top:6px">Últimos 30 dias. A Vercel fecha o dia às 21h de Belém.</p>
+  </section>
+
+  <section class="grid duas">
+    <div class="card"><h2 class="race">Qual botão mais leva pra compra</h2><div id="botoes"></div></div>
+    <div class="card"><h2 class="race">Aparelho de quem visita</h2><div id="aparelhos"></div></div>
+  </section>
+
+  <section class="card" style="margin-top:14px">
+    <h2 class="race">Vídeos publicados</h2>
+    <div class="tabela"><table>
+      <thead><tr><th>Vídeo</th><th>Publicado</th><th>Views</th><th>Curtidas</th><th>Coment.</th><th>Compart.</th><th>Salvos</th></tr></thead>
+      <tbody id="posts"></tbody>
+    </table></div>
+  </section>
+
+  <section class="card" style="margin-top:14px">
+    <h2 class="race">Palavras-chave (comentário → direct)</h2>
+    <div class="tabela"><table>
+      <thead><tr><th>Automação</th><th>Comentários</th><th>Pedido pra seguir</th><th>Seguiram</th><th>Links enviados</th><th>Cliques únicos</th></tr></thead>
+      <tbody id="autos"></tbody>
+    </table></div>
+  </section>
+
+  <details>
+    <summary>Como cada número é contado</summary>
+    <ul>
+      <li><b>Views:</b> soma das views dos vídeos publicados na @bracleanoficial desde o início do funil. O Instagram atualiza com algumas horas de atraso.</li>
+      <li><b>Comentaram, receberam o link e clicaram:</b> contagem da automação de palavra-chave. Cada pessoa recebe o link uma vez.</li>
+      <li><b>Visitantes no biosite:</b> pessoas únicas por dia em braclean.vercel.app, de qualquer origem (direct, bio ou anúncio).</li>
+      <li><b>Cliques pra comprar:</b> toques nos botões Mercado Livre, Shopee, Amazon, nos cards Diesel, Gasolina e Flex e nas linhas de produto.</li>
+      <li>A venda acontece dentro de cada loja. Para fechar a conta, compare com os pedidos do período no Mercado Livre, Shopee e Amazon.</li>
+    </ul>
+  </details>
+
+  <div class="rodape">
+    <span id="atualizado"></span>
+    <span><span id="quem"></span> · <button class="link" id="sair">Sair</button></span>
+  </div>
+</main>
+
+<p class="carregando" id="tela-carregando">Carregando…</p>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const n = (v) => (v == null || isNaN(v)) ? '—' : Number(v).toLocaleString('pt-BR');
+  const pct = (a, b) => b ? (100 * a / b).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + '%' : '—';
+  const dataBR = (s) => s ? s.slice(0, 10).split('-').reverse().join('/') : '—';
+  const ROTULOS = {
+    mercadolivre: 'Comprar no Mercado Livre', shopee: 'Comprar na Shopee', amazon: 'Comprar na Amazon',
+    diesel: 'Card Diesel', gasolina: 'Card Gasolina', flex: 'Card Flex',
+    linha_aditivos: 'Linha Aditivos', linha_carcare: 'Linha Car Care', linha_home: 'Linha Home', site_oficial: 'Site oficial'
+  };
+  const el = (tag, props, ...filhos) => { const e = document.createElement(tag); Object.assign(e, props || {}); filhos.forEach((f) => e.append(f)); return e; };
+
+  function mostrar(tela) {
+    $('tela-login').hidden = tela !== 'login';
+    $('tela-painel').hidden = tela !== 'painel';
+    $('tela-carregando').hidden = tela !== 'carregando';
+  }
+
+  async function carregar() {
+    const r = await fetch('/api/painel', { credentials: 'same-origin', cache: 'no-store' });
+    if (r.status === 401) { mostrar('login'); return; }
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) { mostrar('painel'); $('avisos').replaceChildren(el('div', { className: 'aviso', textContent: d.erro || 'Não foi possível carregar os dados agora.' })); return; }
+    desenhar(d); mostrar('painel');
+  }
+
+  function barras(alvo, linhas, rot, val) {
+    alvo.replaceChildren();
+    if (!linhas.length) { alvo.append(el('p', { className: 'vazio', textContent: 'Ainda sem registros.' })); return; }
+    const max = Math.max(...linhas.map(val)) || 1;
+    linhas.forEach((l) => {
+      const i = el('i'); i.style.width = (100 * val(l) / max) + '%';
+      alvo.append(el('div', { className: 'linha' }, el('span', { textContent: rot(l) }), el('span', { className: 't' }, i), el('b', { textContent: n(val(l)) })));
+    });
+  }
+
+  function grafico(alvo, dias) {
+    alvo.replaceChildren();
+    if (!dias.length) { alvo.append(el('p', { className: 'vazio', textContent: 'Ainda sem visitas.' })); return; }
+    const W = Math.max(300, alvo.clientWidth || 600), H = 220, m = { t: 12, r: 10, b: 26, l: 30 };
+    const max = Math.max(4, ...dias.map((d) => Math.max(d.visitantes, d.cliques)));
+    const passo = Math.ceil(max / 4); const topo = passo * 4;
+    const x = (i) => m.l + (dias.length === 1 ? (W - m.l - m.r) / 2 : i * (W - m.l - m.r) / (dias.length - 1));
+    const y = (v) => H - m.b - v * (H - m.t - m.b) / topo;
+    const ns = 'http://www.w3.org/2000/svg';
+    const s = (tag, at) => { const e = document.createElementNS(ns, tag); for (const k in at) e.setAttribute(k, at[k]); return e; };
+    const svg = s('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': 'Visitantes e cliques pra loja por dia' });
+    for (let v = 0; v <= topo; v += passo) {
+      svg.append(s('line', { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), stroke: '#262626' }));
+      const t = s('text', { x: m.l - 6, y: y(v) + 4, 'text-anchor': 'end', fill: '#9a9a9a', 'font-size': 11 }); t.textContent = v; svg.append(t);
+    }
+    const cada = Math.max(1, Math.ceil(dias.length / Math.floor(W / 70)));
+    dias.forEach((d, i) => { if (i % cada === 0) { const t = s('text', { x: x(i), y: H - 6, 'text-anchor': 'middle', fill: '#9a9a9a', 'font-size': 11 }); t.textContent = dataBR(d.dia).slice(0, 5); svg.append(t); } });
+    [['visitantes', '#e10600'], ['cliques', '#ffd200']].forEach(([k, cor]) => {
+      svg.append(s('polyline', { points: dias.map((d, i) => x(i) + ',' + y(d[k])).join(' '), fill: 'none', stroke: cor, 'stroke-width': 2.5, 'stroke-linejoin': 'round' }));
+      dias.forEach((d, i) => { if (d[k] > 0) svg.append(s('circle', { cx: x(i), cy: y(d[k]), r: 3.2, fill: cor })); });
+    });
+    const guia = s('line', { y1: m.t, y2: H - m.b, stroke: '#555', visibility: 'hidden' }); svg.append(guia);
+    const area = s('rect', { x: m.l, y: m.t, width: W - m.l - m.r, height: H - m.t - m.b, fill: 'transparent' }); svg.append(area);
+    const tip = el('div', { className: 'tip', hidden: true });
+    const mover = (ev) => {
+      const box = svg.getBoundingClientRect(); const px = (ev.clientX - box.left) * W / box.width;
+      const i = Math.max(0, Math.min(dias.length - 1, Math.round((px - m.l) / ((W - m.l - m.r) / Math.max(1, dias.length - 1)))));
+      const d = dias[i]; guia.setAttribute('x1', x(i)); guia.setAttribute('x2', x(i)); guia.setAttribute('visibility', 'visible');
+      tip.hidden = false; tip.textContent = `${dataBR(d.dia).slice(0, 5)} · ${d.visitantes} visitantes · ${d.cliques} cliques`;
+      const left = x(i) * box.width / W - tip.offsetWidth / 2; tip.style.left = Math.max(0, Math.min(box.width - tip.offsetWidth, left)) + 'px';
+    };
+    area.addEventListener('pointermove', mover); area.addEventListener('pointerdown', mover);
+    area.addEventListener('pointerleave', () => { tip.hidden = true; guia.setAttribute('visibility', 'hidden'); });
+    alvo.append(svg, tip);
+  }
+
+  function desenhar(d) {
+    const f = d.funil || [];
+    const v = (i) => (f[i] || {}).valor || 0;
+    $('periodo').textContent = `Instagram @bracleanoficial → palavra-chave ADITIVO → direct → biosite → lojas. Desde ${dataBR(d.inicio)}.`;
+    const resumo = $('resumo'); resumo.replaceChildren();
+    if (v(0) > 0) resumo.append('De ', el('b', { textContent: n(v(0)) }), ' views, ', el('b', { textContent: n(v(1)) }), ' pessoas comentaram ADITIVO e ', el('b', { textContent: n(v(5)) }), ` cliques foram pra uma loja (${pct(v(5), v(0))} das views).`);
+    else resumo.append('O primeiro vídeo acabou de entrar no ar. Os números aparecem aqui conforme as pessoas assistem, comentam e clicam.');
+
+    const max = Math.max(1, ...f.map((e) => e.valor));
+    const etapas = $('etapas'); etapas.replaceChildren();
+    f.forEach((e, i) => {
+      const barra = el('div', { className: 'barra' }); barra.style.width = Math.max(e.valor ? 1.5 : 0, 100 * e.valor / max) + '%'; barra.style.opacity = String(1 - i * 0.1);
+      etapas.append(el('div', { className: 'etapa' }, el('div', { className: 'nome', textContent: e.etapa }), el('div', { className: 'trilho' }, barra, el('span', { className: 'valor', textContent: n(e.valor) }))));
+      if (i > 0) etapas.append(el('div', { className: 'etapa' }, el('span'), el('div', { className: 'passa', textContent: f[i - 1].valor ? `↳ ${pct(e.valor, f[i - 1].valor)} da etapa anterior` : '' })));
+    });
+
+    if (d.seguidores) {
+      $('k-seg').textContent = n(d.seguidores.atual);
+      const c = d.seguidores.crescimento;
+      $('k-seg-det').textContent = `${c > 0 ? '+' : ''}${n(c)} desde ${dataBR(d.inicio)}`;
+      $('k-seg-det').style.color = c > 0 ? 'var(--ok)' : '';
+    }
+    $('k-gate').textContent = n(d.gate.liberado);
+    $('k-gate-det').textContent = `de ${n(d.gate.enviado)} que receberam o pedido pra seguir`;
+    $('k-cdm').textContent = pct(v(3), v(2));
+    $('k-sl').textContent = pct(v(5), v(4));
+
+    grafico($('grafico'), d.dias || []);
+    barras($('botoes'), d.botoes || [], (b) => ROTULOS[b.botao] || b.botao, (b) => b.cliques);
+    const ap = { mobile: 'Celular', desktop: 'Computador', tablet: 'Tablet' };
+    barras($('aparelhos'), d.aparelhos || [], (a) => ap[a.aparelho] || a.aparelho, (a) => a.visitantes);
+
+    const posts = $('posts'); posts.replaceChildren();
+    if (!(d.posts || []).length) posts.append(el('tr', {}, el('td', { colSpan: 7, className: 'vazio', textContent: 'Nenhum vídeo com métricas ainda.' })));
+    (d.posts || []).forEach((p) => {
+      const titulo = p.url ? el('a', { href: p.url, target: '_blank', rel: 'noopener', textContent: p.titulo || 'Ver vídeo' }) : document.createTextNode(p.titulo || '—');
+      posts.append(el('tr', {}, el('td', {}, titulo), ...[dataBR(p.publicado), n(p.views), n(p.curtidas), n(p.comentarios), n(p.compartilhamentos), n(p.salvos)].map((t) => el('td', { textContent: t }))));
+    });
+    const autos = $('autos'); autos.replaceChildren();
+    if (!(d.automacoes || []).length) autos.append(el('tr', {}, el('td', { colSpan: 6, className: 'vazio', textContent: 'Nenhuma automação.' })));
+    (d.automacoes || []).forEach((a) => autos.append(el('tr', {}, ...[a.nome, n(a.comentarios), n(a.gateEnviado), n(a.gateLiberado), n(a.links), n(a.cliquesUnicos)].map((t) => el('td', { textContent: t })))));
+
+    const erros = Object.keys(d.erros || {});
+    $('avisos').replaceChildren(...(erros.length ? [el('div', { className: 'aviso', textContent: 'Alguns números não carregaram agora e podem aparecer zerados. Tente atualizar em alguns minutos.' })] : []));
+    $('atualizado').textContent = 'Atualizado em ' + new Date(d.atualizadoEm).toLocaleString('pt-BR', { timeZone: 'America/Belem', dateStyle: 'short', timeStyle: 'short' }) + ' (atualiza sozinho a cada 5 min)';
+    $('quem').textContent = 'Logado como ' + d.usuario;
+    window.__ultimo = d;
+  }
+
+  $('form-login').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const fd = new FormData(ev.target); const btn = ev.target.querySelector('button');
+    btn.disabled = true; $('erro-login').textContent = '';
+    try {
+      const r = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ usuario: fd.get('usuario'), senha: fd.get('senha') }) });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) { $('erro-login').textContent = d.erro || 'Não foi possível entrar.'; return; }
+      mostrar('carregando'); await carregar();
+    } finally { btn.disabled = false; }
+  });
+  $('sair').addEventListener('click', async () => { await fetch('/api/login', { method: 'DELETE' }); location.reload(); });
+  let largura = window.innerWidth;
+  window.addEventListener('resize', () => { if (Math.abs(window.innerWidth - largura) > 40 && window.__ultimo) { largura = window.innerWidth; grafico($('grafico'), window.__ultimo.dias || []); } });
+  setInterval(() => { if (!$('tela-painel').hidden && !document.hidden) carregar(); }, 5 * 60 * 1000);
+  carregar().catch(() => mostrar('login'));
+})();
+</script>
+</body>
+</html>
