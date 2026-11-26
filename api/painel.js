@@ -11,11 +11,14 @@ const CFG = {
 const CACHE_MS = 3 * 60 * 1000;
 let cache = { em: 0, dados: null };
 
+// Tira aspas, espaços e um "Bearer" colado junto por engano.
+const limpar = (t) => String(t || '').replace(/["'“”‘’`\s]/g, '').replace(/^Bearer/i, '');
+
 async function pegar(url, token, nome) {
   const ctl = new AbortController();
   const t = setTimeout(() => ctl.abort(), 12000);
   let r;
-  try { r = await fetch(url, { headers: { Authorization: 'Bearer ' + String(token || '').trim() }, signal: ctl.signal }); }
+  try { r = await fetch(url, { headers: { Authorization: 'Bearer ' + limpar(token) }, signal: ctl.signal }); }
   catch (e) { throw new Error(nome + ': sem resposta (' + (e.name === 'AbortError' ? 'demorou demais' : e.message) + ')'); }
   finally { clearTimeout(t); }
   const texto = await r.text();

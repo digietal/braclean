@@ -3,7 +3,11 @@ const painel = require('./painel');
 
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
-  const vars = Object.fromEntries(['PAINEL_LOGINS', 'ZERNIO_API_KEY', 'VERCEL_TOKEN'].map((k) => [k, Boolean(process.env[k])]));
+  const limpo = (k) => String(process.env[k] || '').replace(/["'“”‘’`\s]/g, '').replace(/^Bearer/i, '');
+  // Só o formato (tamanho e começo), nunca o valor.
+  const vars = Object.fromEntries(['PAINEL_LOGINS', 'ZERNIO_API_KEY', 'VERCEL_TOKEN'].map((k) => [k, { preenchida: Boolean(process.env[k]), tamanho: limpo(k).length }]));
+  vars.ZERNIO_API_KEY.comecaComSk = limpo('ZERNIO_API_KEY').startsWith('sk_');
+  vars.VERCEL_TOKEN.pareceChaveZernio = limpo('VERCEL_TOKEN').startsWith('sk_');
   const inicio = Date.now();
   let fontes = {};
   try {
