@@ -135,6 +135,7 @@ module.exports.handler = async (req, res) => {
   if (faltando.length) return res.status(500).json({ erro: 'Faltam variáveis na Vercel: ' + faltando.join(', ') });
   try {
     if (!cache.dados || Date.now() - cache.em > CACHE_MS) cache = { em: Date.now(), dados: await montar() };
+    console.log('[painel] dados entregues', JSON.stringify({ erros: Object.keys(cache.dados.erros || {}) }));
     return res.status(200).json({ usuario, ...cache.dados });
   } catch (e) {
     return res.status(502).json({ erro: String(e.message || e) });

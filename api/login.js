@@ -16,11 +16,15 @@ module.exports = async (req, res) => {
 
   if (!process.env.PAINEL_LOGINS) return res.status(500).json({ erro: 'Nenhum login configurado no painel.' });
 
-  const { usuario, senha } = await lerCorpo(req);
+  const corpo = await lerCorpo(req);
+  const { usuario, senha } = corpo;
+  console.log('[login] tentativa', JSON.stringify({ temUsuario: Boolean(usuario), temSenha: Boolean(senha), tipoCorpo: typeof req.body, contentType: req.headers['content-type'] || '' }));
   if (!conferir(usuario, senha)) {
+    console.log('[login] recusado: usuário ou senha não conferem');
     await new Promise((r) => setTimeout(r, 800)); // freia tentativas em sequência
     return res.status(401).json({ erro: 'Usuário ou senha incorretos.' });
   }
   res.setHeader('Set-Cookie', cookieSessao(criarSessao(String(usuario).trim()), DURACAO_S));
+  console.log('[login] aceito');
   return res.status(200).json({ ok: true });
 };

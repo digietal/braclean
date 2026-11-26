@@ -54,14 +54,16 @@ function lerCookie(req) {
 // Devolve o usuário logado, ou null. A sessão cai se o usuário sair do PAINEL_LOGINS.
 function sessao(req) {
   const valor = lerCookie(req);
+  if (!valor) { console.log('[painel] sem cookie de sessão'); return null; }
   const [corpo, ass] = valor.split('.');
-  if (!corpo || !ass || !iguais(assinar(corpo), ass)) return null;
+  if (!corpo || !ass || !iguais(assinar(corpo), ass)) { console.log('[painel] assinatura da sessão não confere'); return null; }
   try {
     const { u, exp } = JSON.parse(Buffer.from(corpo, 'base64url').toString());
-    if (!u || !exp || exp < Date.now() / 1000) return null;
-    if (!logins().some((l) => l.usuario.toLowerCase() === String(u).toLowerCase())) return null;
+    if (!u || !exp || exp < Date.now() / 1000) { console.log('[painel] sessão expirada'); return null; }
+    if (!logins().some((l) => l.usuario.toLowerCase() === String(u).toLowerCase())) { console.log('[painel] usuário da sessão não está mais no PAINEL_LOGINS'); return null; }
     return u;
-  } catch {
+  } catch (e) {
+    console.log('[painel] sessão ilegível', e.message);
     return null;
   }
 }
