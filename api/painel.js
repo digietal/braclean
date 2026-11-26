@@ -12,7 +12,12 @@ const CACHE_MS = 3 * 60 * 1000;
 let cache = { em: 0, dados: null };
 
 async function pegar(url, token, nome) {
-  const r = await fetch(url, { headers: { Authorization: 'Bearer ' + token } });
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), 12000);
+  let r;
+  try { r = await fetch(url, { headers: { Authorization: 'Bearer ' + String(token || '').trim() }, signal: ctl.signal }); }
+  catch (e) { throw new Error(nome + ': sem resposta (' + (e.name === 'AbortError' ? 'demorou demais' : e.message) + ')'); }
+  finally { clearTimeout(t); }
   const texto = await r.text();
   let json;
   try { json = JSON.parse(texto); } catch { json = null; }
@@ -117,7 +122,9 @@ async function montar() {
   };
 }
 
-module.exports = async (req, res) => {
+module.exports.montar = montar;
+module.exports.pegar = pegar;
+module.exports.handler = async (req, res) => {
   res.setHeader('Cache-Control', 'private, no-store');
   const usuario = sessao(req);
   if (!usuario) return res.status(401).json({ erro: 'Faça login.' });
@@ -130,3 +137,5 @@ module.exports = async (req, res) => {
     return res.status(502).json({ erro: String(e.message || e) });
   }
 };
+
+module.exports = Object.assign(module.exports.handler, { montar, pegar });
